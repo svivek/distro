@@ -1,0 +1,80 @@
+* Getting started
+
+  To compile, you need scala and SBT installed on your computer. The
+  newsgroup experiments were run with at least 15 GB of RAM. The POS
+  experiments required much more RAM (over 40GB).
+
+  First, compile by running
+
+  #+BEGIN_SRC bash
+  sbt compile
+  #+END_SRC
+
+  If you want to clean up all the compiled files, delete the =target=,
+  =lib_managed= and =project= directories.
+
+
+* Replicating newsgroup results
+  To train a multiclass classifier using data that is formatted
+  in the lib-linear data format, use =./run.sh linear=. Running this
+  should list the different command line switches that you can use.
+  The most important switches are:
+
+  1. =-n=: The dimensionality of the label vectors. If this
+     dimensionality is more than the number of labels in the problem,
+     then the dimensionality is set to the number of labels.
+
+  2. =-w=: Use one-hot vectors only (i.e. do not train label vectors)
+
+  See the documentation for an explanation of the other options. For
+  every run, the complete log of the execution will be saved in a
+  subdirectory of the directory experiments.
+
+  To produce the newsgroup results, the following settings were used.
+  First, the data:
+
+  #+BEGIN_SRC bash
+  TRAIN_FILE=data/20news/features.extracted/20news-bydate-train-stanford-classifier.txt.feats
+  TEST_FILE=data/20news/features.extracted/20news-bydate-test-stanford-classifier.txt.feats
+  #+END_SRC
+  
+
+  1. Baseline: Structured SVM
+     #+BEGIN_SRC bash
+     ./run.sh linear -n 21 \
+              -w \
+              --train-iters 25 \
+              -t $TRAIN_FILE \
+              -e $EVAL_FILE \
+              -v --cv-iters 5
+     #+END_SRC
+
+  2. DISTRO
+     
+     #+BEGIN_SRC bash
+     RANDOM_SEED=1 && ./run.sh linear -n 20 \
+                     -a l2-prox-alternating \
+                     --train-iters 20 \
+                     -t $TRAIN_FILE \
+                     -e $TEST_FILE \
+                     --weight-train-iters 5 \
+                     --label-train-iters 5 \
+                     --lambda1 0.25 \
+                     --lambda2 0.004096
+     #+END_SRC
+
+     To find the best parameters by cross validation on the training
+     set, you can remove the =--lambda1= and ==--lambda2= options and
+     replace them with a =-v= option to indicate five fold cross
+     validation (as in the baseline). The parameters in the command
+     above are the result of cross-validation.
+
+* Replicating POS results
+  To replicate the POS tagging results, you need to access the correct
+  sections of the Penn Treebank and the Basque data in CONLL format.
+  Use =./run.sh pos= and =./run.sh conll.pos= respectively to get
+  information about the command line options. (The options are very
+  similar to the newsgroup ones.)
+  
+
+
