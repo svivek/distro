@@ -1,3 +1,8 @@
+This is an archive of the code used for the paper [[http://svivek.com/research/2014-nips.html][Learning Distributed
+Representations for Structured Output Prediction]] that appeared at
+NIPS 2014.
+
+
 * Getting started
 
   To compile, you need scala and SBT installed on your computer. The
