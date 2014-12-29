@@ -69,7 +69,7 @@ NIPS 2014.
      #+END_SRC
 
      To find the best parameters by cross validation on the training
-     set, you can remove the =--lambda1= and ==--lambda2= options and
+     set, you can remove the =--lambda1= and =--lambda2= options and
      replace them with a =-v= option to indicate five fold cross
      validation (as in the baseline). The parameters in the command
      above are the result of cross-validation.
